@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import { env } from './config/env';
 import { generalLimiter } from './middlewares/rateLimit.middleware';
 import { errorHandler } from './middlewares/error.middleware';
 import { notFoundHandler } from './middlewares/notFound.middleware';
@@ -11,7 +12,7 @@ import postRoutes from './modules/posts/post.routes';
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+app.use(cors({ origin: env.CORS_ORIGIN }));
 app.use(express.json());
 app.use(generalLimiter);
 

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt';
 import { sendError } from '../utils/response';
+import prisma from '../config/prisma';
 
 export interface AuthRequest extends Request {
   user?: {
@@ -9,11 +10,11 @@ export interface AuthRequest extends Request {
   };
 }
 
-export const authenticate = (
+export const authenticate = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
-): void => {
+): Promise<void> => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -25,7 +26,18 @@ export const authenticate = (
 
   try {
     const decoded = verifyToken(token);
-    req.user = { id: decoded.id, email: decoded.email };
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: { id: true, email: true },
+    });
+
+    if (!user) {
+      sendError(res, 'Invalid or expired token', 401);
+      return;
+    }
+
+    req.user = { id: user.id, email: user.email };
     next();
   } catch {
     sendError(res, 'Invalid or expired token', 401);

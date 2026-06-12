@@ -124,11 +124,7 @@ personal-blogging-platform-api/
 
 ### Why PostgreSQL Was Chosen
 
-- **Relational integrity**: PostgreSQL enforces foreign key constraints, ensuring every post belongs to a valid user.
-- **UUID support**: Native UUID type for distributed-friendly primary keys.
-- **ACID compliance**: Guarantees data consistency for concurrent writes.
-- **JSON support**: Future-proofing for potential schema evolution.
-- **Industry standard**: PostgreSQL is the most widely adopted production database for Node.js applications, making it the expected choice for professional internships.
+PostgreSQL was chosen because the project requires a relational structure between users and posts, strong data integrity, foreign key constraints, and reliable querying.
 
 ## Environment Variables
 
@@ -139,6 +135,7 @@ personal-blogging-platform-api/
 | `JWT_EXPIRES_IN` | JWT token expiration duration | `1d` |
 | `PORT` | Server port | `3000` |
 | `NODE_ENV` | Environment | `development` |
+| `CORS_ORIGIN` | CORS allowed origin | `*` |
 
 ## Installation
 
@@ -435,7 +432,7 @@ curl -X DELETE http://localhost:3000/posts/660e8400-e29b-41d4-a716-446655440002 
 - **Rate limiting**: 100 requests per 15 minutes general limit; 5 requests per 15 minutes on auth routes.
 - **Password hashing**: bcrypt with 10 salt rounds — passwords are never stored in plain text.
 - **JWT authentication**: Tokens expire after 24 hours. Protected routes verify the token on every request.
-- **No password exposure**: Passwords are never returned in any API response.
+- **No password exposure**: Passwords are never returned in API responses. Safe user objects are returned manually or selected explicitly.
 - **No stack trace exposure**: Production errors do not leak internal stack traces.
 - **Environment variables**: All secrets (JWT_SECRET, DATABASE_URL) are loaded from `.env`, never committed.
 - **Input validation**: All request bodies are validated with Zod schemas before reaching controllers.
@@ -464,10 +461,8 @@ docs: add swagger and readme
 
 ## Author
 
-**Mohammed Alsaadi**
-
-- GitHub: [@mohammed-alsaadi](https://github.com/mohammed-alsaadi)
+**Mohamed Ayman**
 
 ---
 
-*Built for internship submission — demonstrates proficiency in Node.js, Express.js, TypeScript, PostgreSQL, Prisma, authentication, security best practices, and API design.*
+*Built for internship submission.*
