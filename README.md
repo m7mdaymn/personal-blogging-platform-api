@@ -126,6 +126,34 @@ personal-blogging-platform-api/
 
 PostgreSQL was chosen because the project requires a relational structure between users and posts, strong data integrity, foreign key constraints, and reliable querying.
 
+## Database Setup
+
+This project uses PostgreSQL through Prisma ORM.
+
+The database itself is **not included** in this repository. To run the project locally:
+
+1. Ensure PostgreSQL is installed and running on your machine.
+2. Create a new database (e.g., `personal_blog`).
+3. Copy `.env.example` to `.env` and update `DATABASE_URL` with your PostgreSQL credentials:
+   ```
+   DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/personal_blog?schema=public"
+   ```
+4. Generate the Prisma client:
+   ```bash
+   npx prisma generate
+   ```
+5. Run the Prisma migration to create the tables:
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+   > **Note:** This project does not include pre-generated migration files. Running the command above will create them based on the `prisma/schema.prisma` file, which is the source of truth.
+6. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+If you use a different PostgreSQL provider (e.g., cloud-hosted), you only need to replace `DATABASE_URL` with your own connection string. No other configuration is required.
+
 ## Environment Variables
 
 | Variable | Description | Default |
@@ -139,12 +167,6 @@ PostgreSQL was chosen because the project requires a relational structure betwee
 
 ## Installation
 
-### Prerequisites
-
-- Node.js 18 or later
-- PostgreSQL 15 or later
-- npm or yarn
-
 ### Steps
 
 ```bash
@@ -155,22 +177,21 @@ cd personal-blogging-platform-api
 # 2. Install dependencies
 npm install
 
-# 3. Create a PostgreSQL database
-psql -U postgres -c "CREATE DATABASE personal_blog;"
-
-# 4. Configure environment variables
+# 3. Configure environment variables
 cp .env.example .env
 # Edit .env with your database URL and a strong JWT_SECRET
 
-# 5. Run Prisma migrations
-npx prisma migrate dev --name init
-
-# 6. Generate Prisma client
+# 4. Generate Prisma client
 npx prisma generate
 
-# 7. Start the development server
+# 5. Run Prisma migrations (creates tables in your database)
+npx prisma migrate dev --name init
+
+# 6. Start the development server
 npm run dev
 ```
+
+> **Prerequisites:** Node.js 18+ and PostgreSQL 15+ are required.
 
 ### Commands Reference
 
@@ -458,6 +479,28 @@ feat: add post CRUD operations
 feat: add validation and error handling
 docs: add swagger and readme
 ```
+
+## Final Reviewer Checklist
+
+Before submission, confirm the following:
+
+- [ ] `.env` is **not** committed to the repository
+- [ ] `.env.example` is committed with safe placeholder values
+- [ ] `README.md` explains how to set up the database locally
+- [ ] `prisma/schema.prisma` exists and is the source of truth for the database schema
+- [ ] `npm run build` passes without errors
+- [ ] Swagger UI is accessible at `/api-docs` when the server is running
+- [ ] All required endpoints exist:
+  - `POST /auth/register`
+  - `POST /auth/login`
+  - `GET /posts`
+  - `POST /posts`
+  - `PUT /posts/:id`
+  - `DELETE /posts/:id`
+- [ ] Passwords are never returned in any API response
+- [ ] Only the owner of a post can update or delete it (403 if not owner)
+- [ ] Author name is correct: **Mohamed Ayman**
+- [ ] Project is ready to upload to GitHub
 
 ## Author
 
