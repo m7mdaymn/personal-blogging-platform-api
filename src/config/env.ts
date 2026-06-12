@@ -17,11 +17,12 @@ const envSchema = z.object({
 const parsed = envSchema.safeParse(process.env);
 
 if (!parsed.success) {
-  console.error('Environment variable validation failed:');
-  for (const issue of parsed.error.issues) {
-    console.error(`  - ${issue.path.join('.')}: ${issue.message}`);
-  }
-  process.exit(1);
+  const messages = parsed.error.issues.map(
+    (issue) => `  - ${issue.path.join('.')}: ${issue.message}`
+  );
+  throw new Error(
+    `Environment variable validation failed:\n${messages.join('\n')}`
+  );
 }
 
 export const env = parsed.data;
